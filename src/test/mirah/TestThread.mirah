@@ -4,7 +4,6 @@ import org.kaspernj.mirah.stdlib.core.*
 import org.kaspernj.mirah.stdlib.thread.*
 import org.junit.Test
 
-$TestClass
 class TestThread
   $Test
   def testThread
@@ -25,5 +24,19 @@ class TestThread
     end
     
     raise "Monitor-variable was not called." if !monitor_called
+    
+    begin
+      mutex = Mutex.new
+      mutex.synchronize do
+        mutex.lock
+        puts "This should have failed with deadlock."
+      end
+      
+      raise "This should have failed."
+    rescue ThreadError
+      #Expected - ignore.
+    end
+    
+    return
   end
 end
